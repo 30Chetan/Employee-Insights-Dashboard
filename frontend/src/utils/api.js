@@ -2,26 +2,10 @@ const API_URL = 'http://localhost:5000/api';
 
 export const fetchEmployees = async () => {
     try {
-        const res = await fetch('https://backend.jotish.in/backend_dev/gettabledata.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: 'test',
-                password: '123456'
-            })
-        });
+        const res = await fetch(`${API_URL}/employees`);
         const data = await res.json();
-        if (data && data.TABLE_DATA && data.TABLE_DATA.data) {
-            return data.TABLE_DATA.data.map(row => ({
-                name: row[0],
-                department: row[1],
-                city: row[2],
-                id: row[3],
-                date: row[4],
-                salary: row[5]
-            }));
+        if (data && data.success) {
+            return data.data;
         }
         return [];
     } catch (error) {

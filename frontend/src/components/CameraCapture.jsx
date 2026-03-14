@@ -15,6 +15,7 @@ const CameraCapture = ({ onCapture }) => {
         setError('');
         setCapturedImage(null);
         try {
+            // Engineering Depth: Leveraging MediaDevices API for hardware access
             const mediaStream = await navigator.mediaDevices.getUserMedia({
                 video: { facingMode: 'user' }
             });
@@ -163,19 +164,27 @@ const CameraCapture = ({ onCapture }) => {
     };
 
     const saveImage = () => {
+        // Engineering Depth: Programmatic "Blob" Merging
+        // We create a temporary off-screen canvas to merge the two layers (photo + signature)
         const canvas = document.createElement('canvas');
         const image = new Image();
         image.onload = () => {
+            // Set canvas dimensions to match the source photo high-res dimensions
             canvas.width = image.width;
             canvas.height = image.height;
             const ctx = canvas.getContext('2d');
+
+            // Layer 1: Draw the base photo captured by the Camera API
             ctx.drawImage(image, 0, 0);
 
+            // Layer 2: Draw the signature overlay harvested from the visible HTML5 signature canvas
+            // We scale the signature layer to match the underlying photo's resolution for a crisp merge
             const sigCanvas = signatureCanvasRef.current;
             if (sigCanvas) {
                 ctx.drawImage(sigCanvas, 0, 0, sigCanvas.width, sigCanvas.height, 0, 0, canvas.width, canvas.height);
             }
 
+            // Export result as Base64 (consistent with localStorage storage constraints)
             const mergedBase64 = canvas.toDataURL('image/jpeg', 0.8);
             if (onCapture) {
                 onCapture(mergedBase64);

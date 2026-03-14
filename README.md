@@ -111,3 +111,37 @@ Re-insert the necessary variables into the dependency array at the bottom of the
 // To fix the code, simply trace the stale variables adding them to the dependency array natively:
 }, [totalItems, rowHeight]);
 ```
+
+---
+
+## 📐 Technical Explanation: Virtualization Math
+
+To handle large datasets efficiently, the **List Page** implements a custom virtualization engine. Instead of rendering every employee in the DOM, we only render what is visible in the viewport plus a small buffer.
+
+### The Algorithm:
+1.  **Row & Container Constants**: We define a fixed `ROW_HEIGHT` (50px) and a `CONTAINER_HEIGHT` (500px).
+2.  **Visible Count**: We calculate the number of rows that can fit: `visibleRows = Math.ceil(containerHeight / rowHeight)`.
+3.  **Scroll Offset**: We listen to the `onScroll` event on the table container, tracking `scrollTop`.
+4.  **Slicing the Data**:
+    *   `startIndex = Math.floor(scrollTop / rowHeight)` (minus a buffer for smooth scrolling).
+    *   `endIndex = startIndex + visibleRows + buffer`.
+    *   The rendered array is `employees.slice(startIndex, endIndex)`.
+5.  **Maintaining Height (The "Illusion")**: To keep the scrollbar accurate and prevent layout shifts, we use two "spacer" divs (or rows):
+    *   **Top Spacer**: Height = `startIndex * rowHeight`.
+    *   **Bottom Spacer**: Height = `(totalItems - endIndex) * rowHeight`.
+
+This ensures that only ~15-20 rows exist in the DOM at any given time, regardless of whether there are 100 or 10,000 employees.
+
+---
+
+## 🖼️ Image Merging Logic
+
+The **Details Page** verification process performs a programmatic "Blob" merge of the captured photo and the user's signature.
+
+1.  **Layers**: We utilize two distinct layers: a `<video>`/`<img>` for the capture and an HTML5 `<canvas>` for the signature.
+2.  **The Merge**: When the user approves the capture, we create an **Offscreen Canvas** matching the photo dimensions.
+3.  **Composite Rendering**:
+    *   First, the high-resolution photo is drawn using `ctx.drawImage(photo, 0, 0)`.
+    *   Second, the signature canvas is drawn on top: `ctx.drawImage(signatureCanvas, 0, 0)`.
+4.  **Export**: The composite is exported using `canvas.toDataURL('image/png')` and stored in `localStorage` for display on the **Analytics Page**.
+
