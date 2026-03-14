@@ -1,15 +1,79 @@
-# Employee Insights Dashboard
+# 📊 Employee Insights Dashboard
 
-## Features Overview
+A full-stack web application built to manage, visualize, and interact with an organization's employee directory. The dashboard emphasizes performance optimization, clean modern UI using Tailwind CSS, and integrates powerful JavaScript APIs for data visualization and hardware interaction.
 
-- **Frontend:** React + Vite, Context API for Authentication
-- **Styling:** Fully Custom TailwindCSS layouts and custom visualizations
-- **Backend:** Node.js Express server to proxy real PHP endpoints
-- **Performance Mapping:** Advanced mathematical `<svg>` charts rendering Average Salaries natively.
-- **Capture Capabilities:** Live hardware WebRTC camera frames with layered verification Canvas signing via native touch/mouse events!
-- **Data Rendering:** Virtualized pure HTML/CSS list windows rendering rows efficiently!
+## 🚀 Key Features
 
-## Geographic Map Logic
+- **Authentication System**: Secure Context API-based login with persistent localStorage sessions. Allows users to manage sessions securely across routes.
+- **Virtualized Employee Directory**: Custom-built high-performance table virtualization hook (`useVirtualScroll.js`) ensuring seamless 60fps scrolling even with thousands of records, without relying on external UI libraries natively.
+- **Hardware Integration (WebRTC)**: Allows HR to take new profile pictures directly from the browser utilizing the device's camera.
+- **Interactive Signature Support**: Features a custom HTML5 Canvas overlay enabling physical or mouse-drawn signatures embedded directly into the captured image base64 export natively.
+- **Advanced Data Visualizations**: Pure SVG data representation visualizing average salaries natively, and OpenStreetMap Leaflet integration pinpointing dynamic office distributions geographically.
+- **Proxy Backend Service**: A dedicated Node.js/Express backend resolving CORS and routing effectively towards upstream PHP datasets.
+
+## 🛠 Tech Stack
+
+- **Frontend Framework**: React.js (Vite configuration)
+- **Styling**: Tailwind CSS v4 (Pure utilities without libraries like MUI/Bootstrap)
+- **Routing**: React Router DOM v6
+- **Mapping**: Leaflet + React-Leaflet
+- **Backend Server**: Node.js & Express
+- **Development Tools**: Nodemon, Dotenv, CORS wrappers.
+
+## 📂 Project Structure
+
+```text
+employee-insights-dashboard/
+├── frontend/                  # React Application 
+│   ├── src/
+│   │   ├── components/        # Reusable UI (CameraCapture, Navbar, ProtectedRoute)
+│   │   ├── context/           # React Context (AuthContext)
+│   │   ├── hooks/             # Custom Hooks (useVirtualScroll)
+│   │   ├── pages/             # Route Pages (Analytics, Details, List, Login)
+│   │   ├── utils/             # Helpers (API proxy wrappers)
+│   │   └── index.css          # Tailwind Main Configuration 
+│   └── package.json           # Frontend Dependencies
+└── backend/                   # NodeJS Express Proxy Server
+    ├── controllers/           # Endpoint handlers
+    ├── routes/                # API pathing Definitions
+    ├── index.js               # Node Entry
+    └── package.json           # Backend Dependencies
+```
+
+## ⚙️ Installation & Usage
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/30Chetan/Employee-Insights-Dashboard.git
+cd Employee-Insights-Dashboard
+```
+
+### 2. Setup the Backend
+Initialize the proxy server configuring your dataset endpoint queries safely.
+```bash
+cd backend
+npm install
+npm run dev
+```
+*The backend server will run efficiently by default on `http://localhost:5000`*.
+
+### 3. Setup the Frontend
+Keep the backend running, open a new terminal tab, and start Vite locally.
+```bash
+cd frontend
+npm install
+npm run dev
+```
+*The React application will execute dynamically at `http://localhost:5173`*.
+
+### 4. Account Access
+Use the following demo credentials internally initialized to access the Dashboard:
+- **Username**: `testuser`
+- **Password**: `Test123`
+
+---
+
+## 🗺 Geographic Map Logic
 
 We integrated the `react-leaflet` package mapping dynamically the available demographic spread of employees dynamically. 
 
@@ -25,7 +89,7 @@ const CITY_COORDINATES = {
 ```
 These precise pinpoints project dynamically to an active `<MapContainer />` block nested seamlessly below the interactive Dashboard visual matrices. The chart scans against `citySalaryStats` looping precisely the employees stationed within the corresponding sectors pushing native Leaflet `<Marker />` instances with descriptive `<Popup />` modals!
 
-## Known Intentional Bug: Virtualization Stale Closure
+## 🐛 Known Intentional Bug: Virtualization Stale Closure
 
 For demonstration and debugging exercise purposes, an **intentional bug** has been embedded into the application's React hook architecture. 
 
