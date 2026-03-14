@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
@@ -8,21 +8,28 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    // If already authenticated, redirect to list
+    // If already authenticated (persistent session), redirect declaratively — no side effects in render body
     if (isAuthenticated) {
-        navigate('/list', { replace: true });
+        return <Navigate to="/list" replace />;
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setError('');
-        const success = login(username, password);
-        if (success) {
-            navigate('/list', { replace: true });
-        } else {
-            setError('Invalid username or password');
-        }
+        setLoading(true);
+
+        setTimeout(() => {
+            const success = login(username, password);
+            setLoading(false);
+            if (success) {
+                navigate('/list', { replace: true });
+            } else {
+                setError('Invalid username or password. Please try again.');
+                setPassword(''); // Clear password field on failure
+            }
+        }, 400);
     };
 
     return (
@@ -43,20 +50,25 @@ const Login = () => {
                 <div className="bg-white/70 backdrop-blur-xl py-8 px-4 shadow-2xl sm:rounded-2xl sm:px-10 border border-white">
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm text-center">
+                            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm text-center flex items-center gap-2 justify-center">
+                                <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
                                 {error}
                             </div>
                         )}
+
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Username</label>
                             <div className="mt-1">
                                 <input
                                     type="text"
                                     required
+                                    autoComplete="username"
                                     value={username}
                                     onChange={e => setUsername(e.target.value)}
                                     className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all sm:text-sm"
-                                    placeholder="testuser"
+                                    placeholder="Enter username"
                                 />
                             </div>
                         </div>
@@ -67,10 +79,11 @@ const Login = () => {
                                 <input
                                     type="password"
                                     required
+                                    autoComplete="current-password"
                                     value={password}
                                     onChange={e => setPassword(e.target.value)}
                                     className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all sm:text-sm"
-                                    placeholder="Test123"
+                                    placeholder="Enter password"
                                 />
                             </div>
                         </div>
@@ -80,17 +93,20 @@ const Login = () => {
                                 <input id="remember-me" type="checkbox" className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">Remember me</label>
                             </div>
-                            <div className="text-sm">
-                                <a href="#" className="font-medium text-blue-600 hover:text-blue-500 transition-colors">Forgot password?</a>
-                            </div>
                         </div>
 
                         <div>
                             <button
                                 type="submit"
-                                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all active:scale-[0.98]"
+                                disabled={loading}
+                                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                                Sign in
+                                {loading ? (
+                                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                    </svg>
+                                ) : 'Sign in'}
                             </button>
                         </div>
                     </form>
@@ -99,4 +115,5 @@ const Login = () => {
         </div>
     );
 };
+
 export default Login;
