@@ -16,9 +16,13 @@ L.Icon.Default.mergeOptions({
 });
 
 const CITY_COORDINATES = {
-    'Delhi': [28.6139, 77.2090],
-    'Mumbai': [19.0760, 72.8777],
-    'Jaipur': [26.9124, 75.7873]
+    'London': [51.5074, -0.1278],
+    'Tokyo': [35.6762, 139.6503],
+    'San Francisco': [37.7749, -122.4194],
+    'New York': [40.7128, -74.0060],
+    'Edinburgh': [55.9533, -3.1883],
+    'Sidney': [-33.8688, 151.2093],
+    'Singapore': [1.3521, 103.8198]
 };
 
 const Analytics = () => {
@@ -229,7 +233,7 @@ const Analytics = () => {
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 lg:col-span-2 flex flex-col">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Geographic Distribution</h3>
                     <div className="flex-1 w-full rounded-xl overflow-hidden border border-gray-200 z-0 relative" style={{ minHeight: '400px' }}>
-                        <MapContainer center={[23.5937, 78.9629]} zoom={5} scrollWheelZoom={false} style={{ height: '100%', width: '100%', position: 'absolute', top: 0, left: 0 }}>
+                        <MapContainer center={[20, 0]} zoom={2} scrollWheelZoom={false} style={{ height: '100%', width: '100%', position: 'absolute', top: 0, left: 0 }}>
                             <TileLayer
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
